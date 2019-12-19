@@ -9,15 +9,13 @@ import edu.princeton.cs.algs4.Digraph;
 public class WordNet {
     private final HashMap<Integer, String> synsetsMap;
     private final HashMap<String, Integer> nouns;
-    private final int size;
-    private final Digraph graph;
     private final SAP sap;
 
     // constructor takes the name of the two input files
     public WordNet(String synsets, String hypernyms) {
         synsetsMap = new HashMap<Integer, String>();
         nouns = new HashMap<String, Integer>();
-        size  = 0;
+        int size  = 0;
 
 
         In in = new In(synsets);
@@ -36,7 +34,7 @@ public class WordNet {
             size++;
         }
 
-        graph = new Digraph(size);
+        Digraph graph = new Digraph(size);
         In inHypernyms = new In(hypernyms);
         while (inHypernyms.hasNextLine()) {
             String[] tokens = inHypernyms.readLine().split(",");
