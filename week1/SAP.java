@@ -11,8 +11,10 @@ public class SAP {
  
     // constructor takes a digraph (not necessarily a DAG)
     public SAP(Digraph G) {
-        if (G == null)
+        if (G == null) {
             throw new NullPointerException();
+        }
+
         graph = new Digraph(G);
         size = graph.V();
 
