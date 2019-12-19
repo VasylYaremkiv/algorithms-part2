@@ -1,20 +1,22 @@
 // import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.In;
+import edu.princeton.cs.algs4.ST;
 import java.util.HashMap; 
 // import java.util.Map; 
 import edu.princeton.cs.algs4.Digraph;
+import edu.princeton.cs.algs4.DirectedCycle;
 
 
 public class WordNet {
-    private final HashMap<Integer, String> synsetsMap;
-    private final HashMap<String, Integer> nouns;
+    private final ST<Integer, String> synsetsMap;
+    private final ST<String, Integer> nouns;
     private final SAP sap;
 
     // constructor takes the name of the two input files
     public WordNet(String synsets, String hypernyms) {
-        synsetsMap = new HashMap<Integer, String>();
-        nouns = new HashMap<String, Integer>();
+        synsetsMap = new ST<Integer, String>();
+        nouns = new ST<String, Integer>();
         int size  = 0;
 
 
@@ -53,19 +55,24 @@ public class WordNet {
 
                 graph.addEdge(v, w);
             }
-       }
+        }
+
+        DirectedCycle cycleFinder = new DirectedCycle(graph);
+        if (cycleFinder.hasCycle()) {
+            throw new IllegalArgumentException();
+        }
 
        sap = new SAP(graph);
     }
 
     // returns all WordNet nouns
     public Iterable<String> nouns() {
-        return this.nouns.keySet();
+        return this.nouns();
     }
 
     // is the word a WordNet noun?
     public boolean isNoun(String word) {
-        return this.nouns.containsKey(word);
+        return this.nouns.contains(word);
     }
 
     // distance between nounA and nounB (defined below)
@@ -96,6 +103,7 @@ public class WordNet {
     public static void main(String[] args) {
         StdOut.println("Start");
         WordNet w = new WordNet("synsets.txt", "hypernyms.txt");
-        StdOut.println(w.distance("ASCII_character", "AB"));
+        StdOut.println(w.distance("Junior", "Adam"));
+        StdOut.println(w.distance("Adam", "Junior"));
     }
 }
