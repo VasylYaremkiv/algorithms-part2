@@ -44,7 +44,7 @@ public class WordNet {
                 throw new NullPointerException();
             }
     
-            for (int i = 1; i <= tokens.length; i++) {
+            for (int i = 1; i < tokens.length; i++) {
                 int w = Integer.parseInt(tokens[i]);
 
                 if (w < 0 || w >= size) {
@@ -95,5 +95,7 @@ public class WordNet {
     // do unit testing of this class
     public static void main(String[] args) {
         StdOut.println("Start");
+        WordNet w = new WordNet("synsets.txt", "hypernyms.txt");
+        StdOut.println(w.distance("ASCII_character", "AB"));
     }
 }
