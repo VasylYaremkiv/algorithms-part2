@@ -6,8 +6,8 @@ import edu.princeton.cs.algs4.StdIn;
 
 
 public class SAP {
-    private Digraph graph;
-    private int size;
+    private final Digraph graph;
+    private final int size;
  
     // constructor takes a digraph (not necessarily a DAG)
     public SAP(Digraph G) {
@@ -17,7 +17,6 @@ public class SAP {
 
         graph = new Digraph(G);
         size = graph.V();
-
     }
  
     // length of shortest ancestral path between v and w; -1 if no such path
@@ -62,13 +61,17 @@ public class SAP {
             throw new NullPointerException();
         }
 
+        BreadthFirstDirectedPaths bfsV = new BreadthFirstDirectedPaths(graph, v);
+        BreadthFirstDirectedPaths bfsW = new BreadthFirstDirectedPaths(graph, w);
+
         return calculateAncestor(bfsV, bfsW);
     }
  
 
     private int calculateLenght(BreadthFirstDirectedPaths bfsV, BreadthFirstDirectedPaths bfsW) {
         int length = Integer.MAX_VALUE;
-        for (int i = 0, temp = 0; i < size; i++) {
+        int temp = 0;
+        for (int i = 0; i < size; i++) {
             if (bfsV.hasPathTo(i) && bfsW.hasPathTo(i)) {
                 temp = bfsV.distTo(i) + bfsW.distTo(i);
                 if (temp < length) {
@@ -87,7 +90,8 @@ public class SAP {
     private int calculateAncestor(BreadthFirstDirectedPaths bfsV, BreadthFirstDirectedPaths bfsW) {
         int length = Integer.MAX_VALUE;
         int ancestor = 0;
-        for (int i = 0, temp = 0; i < size; i++) {
+        int temp = 0;
+        for (int i = 0; i < size; i++) {
             if (bfsV.hasPathTo(i) && bfsW.hasPathTo(i)) {
                 temp = bfsV.distTo(i) + bfsW.distTo(i);
                 if (temp < length) {
