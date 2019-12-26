@@ -55,69 +55,69 @@ public class SeamCarver {
     public int[] findHorizontalSeam() {
         int[] result = new int[this.width()];
 
-        int top = this.width() * this.height() - this.ignoredVerticles() + this.height() - 2;
-        int bottom = top + 1;
+        // int top = this.width() * this.height() - this.ignoredVerticles() + this.height() - 2;
+        // int bottom = top + 1;
 
-        EdgeWeightedDigraph G = new EdgeWeightedDigraph(bottom + 1);
+        // EdgeWeightedDigraph G = new EdgeWeightedDigraph(bottom + 1);
 
-        // StdOut.println("this.width() :" + this.width());
-        // StdOut.println("this.height() :" + this.height());
-
-
-        for (int i = 1; i < this.width() - 1; i++) {
+        // // StdOut.println("this.width() :" + this.width());
+        // // StdOut.println("this.height() :" + this.height());
 
 
-            for (int j = 1; j < this.height() - 1; j++) {
+        // for (int i = 1; i < this.width() - 1; i++) {
 
 
-                // StdOut.print(String.format("%8.2f  ", this.energies[i][j]) + " (" + convertToVerticle(i, j) + ")" );                
-
-                G.addEdge(new DirectedEdge(convertToVerticle(i, j), convertToVerticle(i + 1, j), energies[i][j]));
-
-                if (j > 1) {
-                    G.addEdge(new DirectedEdge(convertToVerticle(i, j), convertToVerticle(i + 1, j - 1), energies[i][j]));
-                }
-
-                if (j < this.height() - 2) {
-                    G.addEdge(new DirectedEdge(convertToVerticle(i, j), convertToVerticle(i + 1, j + 1), energies[i][j]));
-                }
-            }
-            // StdOut.println();
-        }
+        //     for (int j = 1; j < this.height() - 1; j++) {
 
 
-        for (int j = 1; j < this.height() - 1; j++) {
-            G.addEdge(new DirectedEdge(top, convertToVerticle(1, j), 0.0));
-            G.addEdge(new DirectedEdge(convertToVerticle(this.width() - 2, j), bottom, 0.0));
-        }
+        //         // StdOut.print(String.format("%8.2f  ", this.energies[i][j]) + " (" + convertToVerticle(i, j) + ")" );                
+
+        //         G.addEdge(new DirectedEdge(convertToVerticle(i, j), convertToVerticle(i + 1, j), energies[i][j]));
+
+        //         if (j > 1) {
+        //             G.addEdge(new DirectedEdge(convertToVerticle(i, j), convertToVerticle(i + 1, j - 1), energies[i][j]));
+        //         }
+
+        //         if (j < this.height() - 2) {
+        //             G.addEdge(new DirectedEdge(convertToVerticle(i, j), convertToVerticle(i + 1, j + 1), energies[i][j]));
+        //         }
+        //     }
+        //     // StdOut.println();
+        // }
+
+
+        // for (int j = 1; j < this.height() - 1; j++) {
+        //     G.addEdge(new DirectedEdge(top, convertToVerticle(1, j), 0.0));
+        //     G.addEdge(new DirectedEdge(convertToVerticle(this.width() - 2, j), bottom, 0.0));
+        // }
         
 
 
-        // StdOut.println("G.V :" + G.V());
-        // StdOut.println("G.E :" + G.E());
+        // // StdOut.println("G.V :" + G.V());
+        // // StdOut.println("G.E :" + G.E());
 
-        AcyclicSP sp = new AcyclicSP(G, top);
-        // StdOut.printf("%d to %d (%.2f)  ", top, bottom, sp.distTo(bottom));
-        int i = 0;
-        for (DirectedEdge e : sp.pathTo(bottom)) {
-            // StdOut.print(e + "   " );
+        // AcyclicSP sp = new AcyclicSP(G, top);
+        // // StdOut.printf("%d to %d (%.2f)  ", top, bottom, sp.distTo(bottom));
+        // int i = 0;
+        // for (DirectedEdge e : sp.pathTo(bottom)) {
+        //     // StdOut.print(e + "   " );
 
-            if (e.from() == top) {
-                result[i++] = this.convertToRow(e.to());
-                continue;
-            }
-            // if (e.to() == bottom) {
-            //     result[i++] = this.convertToRow(e.from());
-            //     continue;
-            // }
-            result[i++] = this.convertToRow(e.from());
+        //     if (e.from() == top) {
+        //         result[i++] = this.convertToRow(e.to());
+        //         continue;
+        //     }
+        //     // if (e.to() == bottom) {
+        //     //     result[i++] = this.convertToRow(e.from());
+        //     //     continue;
+        //     // }
+        //     result[i++] = this.convertToRow(e.from());
 
 
 
-        }
-        result[i] = result[i - 1];
+        // }
+        // result[i] = result[i - 1];
 
-        StdOut.println();
+        // StdOut.println();
 
 
         // Topological topological = new Topological(G);
@@ -139,9 +139,9 @@ public class SeamCarver {
         return (x - 1) * (this.height() - 2) + y - 1;
     }
 
-    // private int convertToColumn(int v) {
-    //     return (v + 0) / (this.height() - 2) + 1;
-    // }
+    private int convertToColumn(int v) {
+        return (v + 0) / (this.height() - 2) + 1;
+    }
 
     private int convertToRow(int v) {
         return (v + 0) % (this.height() - 2) + 1;
@@ -153,9 +153,9 @@ public class SeamCarver {
  
     // sequence of indices for vertical seam
     public int[] findVerticalSeam() {
-        int[] result = new int[this.width()];
+        int[] result = new int[this.height()];
 
-        int top = this.width() * this.height() - this.ignoredVerticles() + this.height() - 2;
+        int top = (this.width()  - 1) * (this.height() - 2) + 1;
         int bottom = top + 1;
 
         EdgeWeightedDigraph G = new EdgeWeightedDigraph(bottom + 1);
@@ -164,73 +164,87 @@ public class SeamCarver {
         // StdOut.println("this.height() :" + this.height());
 
 
-        for (int i = 1; i < this.width() - 1; i++) {
+        int l = this.width() - 2;
+        int v = 0;
+        for (int i = 1; i < this.height() - 1; i++) {
+            for (int j = 1; j < this.width() - 1; j++) {
+                // StdOut.print(String.format("%8.2f  ", this.energies[j][i]));       
+                // StdOut.print( "(" + String.format("%8.2f;", this.energies[j][i+1]) + ")");       
+                
+                // StdOut.println( "(" + j + ", " + i + ") :" + this.convertToVerticle(j, i) + " => " + this.convertToColumn(this.convertToVerticle(j, i)) + ", " + this.convertToRow(this.convertToVerticle(j, i)));                
+     
 
-
-            for (int j = 1; j < this.height() - 1; j++) {
-
-
-                // StdOut.print(String.format("%8.2f  ", this.energies[i][j]) + " (" + convertToVerticle(i, j) + ")" );                
-
-                G.addEdge(new DirectedEdge(convertToVerticle(i, j), convertToVerticle(i + 1, j), energies[i][j]));
-
+                // StdOut.print( v +  "->" + (v  + l));  
+                G.addEdge(new DirectedEdge(v, v + l, energies[j][i]));
                 if (j > 1) {
-                    G.addEdge(new DirectedEdge(convertToVerticle(i, j), convertToVerticle(i + 1, j - 1), energies[i][j]));
-                }
+                    G.addEdge(new DirectedEdge(v, v + l - 1, energies[j][i]));
 
-                if (j < this.height() - 2) {
-                    G.addEdge(new DirectedEdge(convertToVerticle(i, j), convertToVerticle(i + 1, j + 1), energies[i][j]));
+                    // StdOut.print( "(" + v +  "->" + (v  + l - 1) + ")");  
+
+
+                    // StdOut.print("( " + String.format("%7.2f  ", this.energies[j-1][i+1]) + ")");
                 }
+                if (j < this.width() - 2) {
+                    G.addEdge(new DirectedEdge(v, v + l + 1, energies[j][i]));
+                    // StdOut.print( "(" + v +  "->" + (v  + l + 1) + ")");  
+
+                    // StdOut.print("( " + String.format("%7.2f  ", this.energies[j+1][i+1]) + ")");
+                }
+                v++;
             }
             // StdOut.println();
         }
 
 
-        for (int j = 1; j < this.height() - 1; j++) {
-            G.addEdge(new DirectedEdge(top, convertToVerticle(1, j), 0.0));
-            G.addEdge(new DirectedEdge(convertToVerticle(this.width() - 2, j), bottom, 0.0));
+
+        // for (int i = 1; i < this.width() - 1; i++) {
+        //     for (int j = 1; j < this.height() - 1; j++) {
+        //         StdOut.print(String.format("%8.2f  ", this.energies[i][j]) + " (" + convertToVerticle(i, j) + ")");                
+        //         G.addEdge(new DirectedEdge(convertToVerticle(i, j), convertToVerticle(i + 1, j), energies[i][j]));
+        //         if (j > 1) {
+        //             G.addEdge(new DirectedEdge(convertToVerticle(i, j), convertToVerticle(i + 1, j - 1), energies[i][j]));
+        //         }
+        //         if (j < this.height() - 2) {
+        //             G.addEdge(new DirectedEdge(convertToVerticle(i, j), convertToVerticle(i + 1, j + 1), energies[i][j]));
+        //         }
+        //     }
+        //     StdOut.println();
+        // }
+
+
+        for (int i = 0; i < l; i++) {
+            // StdOut.println( "(" + top +  "->" + (i) + ")");  
+
+            G.addEdge(new DirectedEdge(top, i, 0.0));
+            G.addEdge(new DirectedEdge(bottom - i - 2, bottom, 0.0));
         }
         
 
 
         // StdOut.println("G.V :" + G.V());
         // StdOut.println("G.E :" + G.E());
+        // StdOut.println("v :" + v);
+        // StdOut.println("l :" + l);
 
         AcyclicSP sp = new AcyclicSP(G, top);
         // StdOut.printf("%d to %d (%.2f)  ", top, bottom, sp.distTo(bottom));
         int i = 0;
         for (DirectedEdge e : sp.pathTo(bottom)) {
-            // StdOut.print(e + "   " );
+            // StdOut.print(e + "   ");
 
             if (e.from() == top) {
-                result[i++] = this.convertToRow(e.to());
+                result[i++] = e.to() + 1;
                 continue;
             }
             // if (e.to() == bottom) {
             //     result[i++] = this.convertToRow(e.from());
             //     continue;
             // }
-            result[i++] = this.convertToRow(e.from());
-
-
-
+            result[i++] = e.from() % l + 1;
         }
-        result[i] = result[i - 1];
+        // result[i] = result[i - 1];
 
-        StdOut.println();
-
-
-        // Topological topological = new Topological(G);
-        // int x, y;
-        // for (int v : topological.order()) {
-        //     // for (DirectedEdge e : G.adj(v)) {
-        //     //     relax(e);
-        //     // }
-        //     x = this.convertToColumn(v);
-        //     y = this.convertToRow(v);
-        //     StdOut.println("v (" + x + ", " + y + ") : " + v);
-        // }
-
+        // StdOut.println();
 
         return result;
     }
@@ -356,9 +370,9 @@ public class SeamCarver {
         Picture p = new Picture("/Users/vasyly/coursera/algorithms-part2/week2/6x5.png");
         SeamCarver s = new SeamCarver(p);
 
-        for (int i = 0; i < s.width(); i++) {
-            for (int j = 0; j < s.height(); j++) {
-                StdOut.print(String.format("%8.2f  ", s.energy(i, j)));                
+        for (int i = 0; i < s.height(); i++) {
+            for (int j = 0; j < s.width(); j++) {
+                StdOut.print(String.format("%8.2f  ", s.energy(j, i)));                
             }
             StdOut.println();
         }
@@ -370,7 +384,7 @@ public class SeamCarver {
         //     StdOut.println();
         // }
 
-        for (int v: s.findHorizontalSeam()) {
+        for (int v: s.findVerticalSeam()) {
             StdOut.println("*v : " + v);
         }
 
