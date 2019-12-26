@@ -1,8 +1,9 @@
 import edu.princeton.cs.algs4.Picture;
+import java.awt.Color;
 
 
 public class SeamCarver {
-    private Picture p;
+    private Picture picture;
 
     // create a seam carver object based on the given picture
     public SeamCarver(Picture picture) {
@@ -11,22 +12,22 @@ public class SeamCarver {
         }
 
 
-        p = picture;
+        this.picture = picture;
     }
  
     // current picture
     public Picture picture() {
-        return p;
+        return picture;
     }
  
     // width of current picture
     public int width() {
-        return p.width();
+        return picture.width();
     }
  
     // height of current picture
     public int height() {
-        return p.height();
+        return picture.height();
     }
  
     // energy of pixel at column x and row y
@@ -84,9 +85,18 @@ public class SeamCarver {
             previous = seam[i];
         }
 
+        Picture newPicture = new Picture(this.width(), this.height() - 1);
+        for (int i = 0; i < this.width(); i++) {
+            for (int j = 0; j < seam[i]; j++) {
+                newPicture.set(i, j, picture.get(i, j));
+            }            
 
+            for (int j = seam[i] + 1; j < this.height(); j++) {
+                newPicture.set(i, j - 1, picture.get(i, j));
+            }            
+        }
 
-
+        this.picture = newPicture;
     }
  
     // remove vertical seam from current picture
@@ -117,8 +127,18 @@ public class SeamCarver {
         }
 
 
+        Picture newPicture = new Picture(this.width() - 1, this.height());
+        for (int i = 0; i < this.height(); i++) {
+            for (int j = 0; j < seam[i]; j++) {
+                newPicture.set(j, i, picture.get(j, i));
+            }            
 
+            for (int j = seam[i] + 1; j < this.width(); j++) {
+                newPicture.set(j - 1, i, picture.get(j, i));
+            }            
+        }
 
+        this.picture = newPicture;
     }
  
     //  unit testing (optional)
