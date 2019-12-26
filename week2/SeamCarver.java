@@ -1,5 +1,9 @@
 import edu.princeton.cs.algs4.Picture;
 import edu.princeton.cs.algs4.StdOut;
+import edu.princeton.cs.algs4.DirectedEdge;
+import edu.princeton.cs.algs4.EdgeWeightedDigraph;
+import edu.princeton.cs.algs4.Topological;
+
 
 import java.awt.Color;
 
@@ -49,7 +53,56 @@ public class SeamCarver {
     public int[] findHorizontalSeam() {
         int[] result = new int[this.width()];
 
+        EdgeWeightedDigraph G = new EdgeWeightedDigraph(this.width() * this.height() - this.ignoredVerticles());
+
+        for (int i = 1; i < this.width() - 2; i++) {
+            for (int j = 1; j < this.height() - 1; j++) {
+                G.addEdge(new DirectedEdge(convertToVerticle(i, j), convertToVerticle(i + 1, j), energies[i][j]));
+
+                // if (j > 1) {
+                //     G.addEdge(new DirectedEdge(convertToVerticle(i, j), convertToVerticle(i + 1, j - 1), energies[i][j]));
+                // }
+
+                // if (j < this.height() - 2) {
+                //     G.addEdge(new DirectedEdge(convertToVerticle(i, j), convertToVerticle(i + 1, j + 1), energies[i][j]));
+                // }
+            }
+        }
+
+
+
+        StdOut.println("G.V :" + G.V());
+        StdOut.println("G.E :" + G.E());
+
+        Topological topological = new Topological(G);
+        int x, y;
+        for (int v : topological.order()) {
+            // for (DirectedEdge e : G.adj(v)) {
+            //     relax(e);
+            // }
+            x = this.convertToColumn(v);
+            y = this.convertToRow(v);
+            StdOut.println("v (" + x + ", " + y + ") : " + v);
+        }
+
+
         return result;
+    }
+
+    public int convertToVerticle(int x, int y) {
+        return (x - 1) * (this.height() - 2) + y - 1;
+    }
+
+    public int convertToColumn(int v) {
+        return (v + 0) / (this.height() - 2) + 1;
+    }
+
+    public int convertToRow(int v) {
+        return (v + 0) % (this.height() - 2) + 1;
+    }
+
+    private int ignoredVerticles() {
+        return this.width() * 2 + this.height() * 2 - 4;
     }
  
     // sequence of indices for vertical seam
@@ -185,6 +238,26 @@ public class SeamCarver {
                 StdOut.print(String.format("%8.2f  ", s.energy(i, j)));                
             }
             StdOut.println();
+        }
+
+        for (int i = 1; i < s.width() - 1; i++) {
+            for (int j = 1; j < s.height() - 1; j++) {
+                StdOut.println( "(" + i + ", " + j + ") :" + s.convertToVerticle(i, j) + " => " + s.convertToColumn(s.convertToVerticle(i, j)) + ", " + s.convertToRow(s.convertToVerticle(i, j)));                
+            }
+            StdOut.println();
+        }
+
+
+        // StdOut.println("v(1,1) : " + s.convertToVerticle(1, 1));
+        // StdOut.println("v(1,2) : " + s.convertToVerticle(1, 2));
+        // StdOut.println("v(2,1) : " + s.convertToVerticle(2, 1));
+        // StdOut.println("v(2,3) : " + s.convertToVerticle(2, 3));
+
+        // StdOut.println("v(*3) : " + s.convertToColumn(3));
+        // StdOut.println("v(*5) : " + s.convertToColumn(5));
+
+        for (int v: s.findHorizontalSeam()) {
+            StdOut.println("*v : " + v);
         }
     }
  }
