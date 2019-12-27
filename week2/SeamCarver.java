@@ -155,10 +155,15 @@ public class SeamCarver {
     public int[] findVerticalSeam() {
         int[] result = new int[this.height()];
 
-        int top = (this.width()  - 1) * (this.height() - 2) + 1;
+
+        if (this.width() < 3 || this.height() < 3) {
+            return result;
+        }
+
+        int top = (this.width() - 2) * (this.height() - 1) ;
         int bottom = top + 1;
 
-        EdgeWeightedDigraph G = new EdgeWeightedDigraph(bottom + 1);
+        EdgeWeightedDigraph G = new EdgeWeightedDigraph(top + 2);
 
         // StdOut.println("this.width() :" + this.width());
         // StdOut.println("this.height() :" + this.height());
@@ -174,7 +179,7 @@ public class SeamCarver {
                 // StdOut.println( "(" + j + ", " + i + ") :" + this.convertToVerticle(j, i) + " => " + this.convertToColumn(this.convertToVerticle(j, i)) + ", " + this.convertToRow(this.convertToVerticle(j, i)));                
      
 
-                // StdOut.print( v +  "->" + (v  + l));  
+                // StdOut.print(v +  "->" + (v  + l));  
                 G.addEdge(new DirectedEdge(v, v + l, energies[j][i]));
                 if (j > 1) {
                     G.addEdge(new DirectedEdge(v, v + l - 1, energies[j][i]));
@@ -216,6 +221,8 @@ public class SeamCarver {
             // StdOut.println( "(" + top +  "->" + (i) + ")");  
 
             G.addEdge(new DirectedEdge(top, i, 0.0));
+
+            // StdOut.println( "(" + (bottom - i - 2) +  "->" + (bottom) + ")");  
             G.addEdge(new DirectedEdge(bottom - i - 2, bottom, 0.0));
         }
         
@@ -368,6 +375,7 @@ public class SeamCarver {
     //  unit testing (optional)
     public static void main(String[] args) {
         Picture p = new Picture("/Users/vasyly/coursera/algorithms-part2/week2/6x5.png");
+        // Picture p = new Picture("/Users/vasyly/coursera/algorithms-part2/week2/3x4.png");
         SeamCarver s = new SeamCarver(p);
 
         for (int i = 0; i < s.height(); i++) {
