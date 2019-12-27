@@ -15,7 +15,7 @@ public class SeamCarver {
     private double[][] energies;
 
     // create a seam carver object based on the given picture
-    public SeamCarver(Picture picture) {
+    public SeamCarver(final Picture picture) {
         if (picture == null) {
             throw new IllegalArgumentException();
         }
@@ -269,11 +269,11 @@ public class SeamCarver {
             throw new IllegalArgumentException();
         }
         int previous = seam[0];
-        if (previous < 0 || previous >= this.width()) {
+        if (previous < 0 || previous >= this.height()) {
             throw new IllegalArgumentException();
         }
         for (int i = 1; i < seam.length; i++) {
-            if (seam[i] < 0 || seam[i] >= this.width()) {
+            if (seam[i] < 0 || seam[i] >= this.height()) {
                 throw new IllegalArgumentException();
             }
             if (seam[i] < previous - 1 || seam[i] > previous + 1) {
@@ -311,11 +311,11 @@ public class SeamCarver {
             throw new IllegalArgumentException();
         }
         int previous = seam[0];
-        if (previous < 0 || previous >= this.height()) {
+        if (previous < 0 || previous >= this.width()) {
             throw new IllegalArgumentException();
         }
         for (int i = 1; i < seam.length; i++) {
-            if (seam[i] < 0 || seam[i] >= this.height()) {
+            if (seam[i] < 0 || seam[i] >= this.width()) {
                 throw new IllegalArgumentException();
             }
             if (seam[i] < previous - 1 || seam[i] > previous + 1) {
