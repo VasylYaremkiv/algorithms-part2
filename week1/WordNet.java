@@ -62,7 +62,7 @@ public class WordNet {
             throw new IllegalArgumentException();
         }
 
-       sap = new SAP(graph);
+        sap = new SAP(graph);
     }
 
     // returns all WordNet nouns
