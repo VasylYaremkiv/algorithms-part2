@@ -117,26 +117,78 @@ public class BaseballElimination {
         int E = 3 * gameNodes + n - 1;
 
         int s = 0, t = V - 1;
+        // int j = 0;
+        int teamId = this.teamId(team);
+        int gameNodesIndex = 1;
+        int teamI = 0;
+        int teamJ = 0;
 
-        FlowNetwork G = new FlowNetwork(V, E);
+        FlowNetwork G = new FlowNetwork(V);
+        StdOut.println("\n\n\nTEAM : " + team);
 
-        // for (int i = 1; i <= gameNodes; i++) {
-        //     G.E()
-        // }
+        for (int i = 0; i < n; i++) {
+            if (i == teamId) {
+                continue;
+            }
 
-        // StdOut.println(G);
+            teamJ = teamI + 1;
+            for (int j = i + 1; j < n; j++) {
+                if (j == teamId) {
+                    continue;
+                }
+               
+                StdOut.println("From " + s + " to " + gameNodesIndex + "(" +  this.against[i][j] +")");
+                G.addEdge(new FlowEdge(s, gameNodesIndex, this.against[i][j]));
+
+                StdOut.println(" * From " + gameNodesIndex + " to " + (gameNodes + teamI + 1) + "(MAX)");
+                StdOut.println(" * From " + gameNodesIndex + " to " + (gameNodes + teamJ + 1) + "(MAX)");
+                G.addEdge(new FlowEdge(gameNodesIndex, gameNodes + teamI + 1, Integer.MAX_VALUE));
+                G.addEdge(new FlowEdge(gameNodesIndex, gameNodes + teamJ + 1, Integer.MAX_VALUE));
+
+                gameNodesIndex++;
+                teamJ++;
+            }
+
+            teamI++;
+        }
+
+        teamI = 0;
+        for (int i = 0; i < n; i++) {
+            if (i == teamId) {
+                continue;
+            }
+
+            StdOut.println("LAST From " + (gameNodes + teamI + 1) + " to " + t +" V: " + (teamWings - this.wins[teamI]) );
+            G.addEdge(new FlowEdge(gameNodes + teamI + 1, t, teamWings - this.wins[i]));
+
+            teamI++;
+        }
+
+        StdOut.println(G);
 
         // compute maximum flow and minimum cut
         FordFulkerson maxflow = new FordFulkerson(G, s, t);
-        // StdOut.println("Max flow from " + s + " to " + t);
+        StdOut.println("Max flow from " + s + " to " + t);
         for (int v = 0; v < G.V(); v++) {
             for (FlowEdge e : G.adj(v)) {
+                if (e.to() == t && e.flow() == e.capacity()) {
+                    StdOut.println("   " + e);
+                }
                 // if ((v == e.from()) && e.flow() > 0)
-                    // StdOut.println("   " + e);
+                //     StdOut.println("   " + e);
             }
         }
 
         
+        StdOut.print("Min cut: ");
+        for (int v = 0; v < G.V(); v++) {
+            if (maxflow.inCut(v)) StdOut.print(v + " ");
+
+
+        }
+        StdOut.println();
+
+        StdOut.println("Max flow value = " +  maxflow.value());
 
         return false;
     }
@@ -152,6 +204,8 @@ public class BaseballElimination {
         }
 
         Bag<String> eliminationTeams = new Bag<String>();
+
+
 
         return eliminationTeams;
     }
@@ -181,6 +235,8 @@ public class BaseballElimination {
             } else {
                 StdOut.println(team + " is not eliminated");
             }
+
+            // break;
         }
     }
 }
