@@ -1,9 +1,11 @@
 import edu.princeton.cs.algs4.Bag;
+import edu.princeton.cs.algs4.FlowEdge;
+import edu.princeton.cs.algs4.FlowNetwork;
+import edu.princeton.cs.algs4.FordFulkerson;
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdOut;
-import edu.princeton.cs.algs4.FordFulkerson;
-
 import java.util.HashMap;
+
 
 public class BaseballElimination {
     private final HashMap<String, Integer> teams;
@@ -28,8 +30,11 @@ public class BaseballElimination {
         this.against = new int[n][n];
 
         String[] splited;
+        String line;
         for (int i = 0; i < n; i++) {
-            splited = in.readLine().split("\\s+");
+            line = in.readLine().trim();
+            // StdOut.println(line);
+            splited = line.split("\\s+");
             this.teams.put(splited[0], i);
 
             this.wins[i] = Integer.parseInt(splited[1]);
@@ -97,6 +102,42 @@ public class BaseballElimination {
             throw new IllegalArgumentException();
         }
 
+        // int id = this.teamId(team);
+
+        int teamWings = this.wins(team) + this.remaining(team);
+        for (String t : this.teams()) {
+            if (t != team && teamWings < this.wins(t)) {
+                return true;
+            }
+        }
+
+        int n = this.numberOfTeams();
+        int gameNodes = (n - 1) * (n - 2) / 2;
+        int V = 2 + (n - 1) + gameNodes;
+        int E = 3 * gameNodes + n - 1;
+
+        int s = 0, t = V - 1;
+
+        FlowNetwork G = new FlowNetwork(V, E);
+
+        // for (int i = 1; i <= gameNodes; i++) {
+        //     G.E()
+        // }
+
+        // StdOut.println(G);
+
+        // compute maximum flow and minimum cut
+        FordFulkerson maxflow = new FordFulkerson(G, s, t);
+        // StdOut.println("Max flow from " + s + " to " + t);
+        for (int v = 0; v < G.V(); v++) {
+            for (FlowEdge e : G.adj(v)) {
+                // if ((v == e.from()) && e.flow() > 0)
+                    // StdOut.println("   " + e);
+            }
+        }
+
+        
+
         return false;
     }
 
@@ -104,6 +145,10 @@ public class BaseballElimination {
     public Iterable<String> certificateOfElimination(String team) {
         if (!this.teams.containsKey(team)) {
             throw new IllegalArgumentException();
+        }
+
+        if (!this.isEliminated(team)) {
+            return null;
         }
 
         Bag<String> eliminationTeams = new Bag<String>();
