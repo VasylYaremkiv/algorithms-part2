@@ -35,7 +35,6 @@ public class BaseballElimination {
         String line;
         for (int i = 0; i < n; i++) {
             line = in.readLine().trim();
-            // if (filename == "teams5b.txt" || filename == "teams5c.txt") { StdOut.println(line); }
             splited = line.split("\\s+");
             this.teams.put(splited[0], i);
             this.teamsArray[i] = splited[0];
@@ -105,10 +104,6 @@ public class BaseballElimination {
             throw new IllegalArgumentException();
         }
 
-        // int id = this.teamId(team);
-
-
-
         return this.certificateOfElimination(team) != null;
     }
 
@@ -117,10 +112,6 @@ public class BaseballElimination {
         if (!this.teams.containsKey(team)) {
             throw new IllegalArgumentException();
         }
-
-        // if (!this.isEliminated(team)) {
-        //     return null;
-        // }
 
         Bag<String> eliminationTeams = new Bag<String>();
 
@@ -139,17 +130,14 @@ public class BaseballElimination {
         int n = this.numberOfTeams();
         int gameNodes = (n - 1) * (n - 2) / 2;
         int total = 2 + (n - 1) + gameNodes;
-        // int E = 3 * gameNodes + n - 1;
 
         int s = 0, t = total - 1;
-        // int j = 0;
         int teamId = this.teamId(team);
         int gameNodesIndex = 1;
         int teamI = 0;
         int teamJ = 0;
 
         FlowNetwork G = new FlowNetwork(total);
-        // StdOut.println("\n\n\nTEAM : " + team);
 
         for (int i = 0; i < n; i++) {
             if (i == teamId) {
@@ -161,12 +149,8 @@ public class BaseballElimination {
                 if (j == teamId) {
                     continue;
                 }
-               
-                // StdOut.println("From " + s + " to " + gameNodesIndex + "(" +  this.against[i][j] +")");
                 G.addEdge(new FlowEdge(s, gameNodesIndex, this.against[i][j]));
 
-                // StdOut.println(" * From " + gameNodesIndex + " to " + (gameNodes + teamI + 1) + "(MAX)");
-                // StdOut.println(" * From " + gameNodesIndex + " to " + (gameNodes + teamJ + 1) + "(MAX)");
                 G.addEdge(new FlowEdge(gameNodesIndex, gameNodes + teamI + 1, Double.POSITIVE_INFINITY));
                 G.addEdge(new FlowEdge(gameNodesIndex, gameNodes + teamJ + 1, Double.POSITIVE_INFINITY));
 
@@ -184,41 +168,21 @@ public class BaseballElimination {
                 continue;
             }
 
-            // StdOut.println("LAST From " + (gameNodes + teamI + 1) + " to " + t +" V: " + (teamWings - this.wins[teamI]) );
             G.addEdge(new FlowEdge(gameNodes + teamI + 1, t, teamWings - this.wins[i]));
-            // StdOut.println(" -- " + this.teamsArray[i]);
             teamI++;
         }
-
-        // StdOut.println(G);
-
-        // compute maximum flow and minimum cut
         FordFulkerson maxflow = new FordFulkerson(G, s, t);
 
-        // StdOut.println(G);
-        // StdOut.println(maxflow.inCut(t));
-
-        // StdOut.println("Max flow from " + s + " to " + t);
-        // for (int v = t; v < G.V(); v++) {
-            for (FlowEdge e : G.adj(t)) {
-                // StdOut.println(maxflow.inCut(e.from()));
-
-                if (maxflow.inCut(e.from())) {
-                // if (e.to() == t && e.flow() == e.capacity()) {
-                    // StdOut.println("   " + e);
-
-                    int tid = e.from() - gameNodes - 1;
-                    if (tid >= teamId) {
-                        tid++;
-                    }
-                    eliminationTeams.add(this.teamsArray[tid]);
+        for (FlowEdge e : G.adj(t)) {
+            if (maxflow.inCut(e.from())) {
+                int tid = e.from() - gameNodes - 1;
+                if (tid >= teamId) {
+                    tid++;
                 }
-                // if ((v == e.from()) && e.flow() > 0)
-                //     StdOut.println("   " + e);
+                eliminationTeams.add(this.teamsArray[tid]);
             }
-        // }
+        }
 
-        // StdOut.println(eliminationTeams.isEmpty());
         if (eliminationTeams.isEmpty()) {
             return null;
         } else {
@@ -242,7 +206,6 @@ public class BaseballElimination {
         }
 
         for (String team : division.teams()) {
-            // String team = "Detroit";// "Toronto";
             if (division.isEliminated(team)) {
                 StdOut.print(team + " is eliminated by the subset R = { ");
                 for (String t : division.certificateOfElimination(team)) {
@@ -252,8 +215,6 @@ public class BaseballElimination {
             } else {
                 StdOut.println(team + " is not eliminated");
             }
-
-            // break;
         }
     }
 }
