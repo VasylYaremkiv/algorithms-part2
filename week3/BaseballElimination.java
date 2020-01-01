@@ -35,7 +35,7 @@ public class BaseballElimination {
         String line;
         for (int i = 0; i < n; i++) {
             line = in.readLine().trim();
-            // StdOut.println(line);
+            // if (filename == "teams5b.txt" || filename == "teams5c.txt") { StdOut.println(line); }
             splited = line.split("\\s+");
             this.teams.put(splited[0], i);
             this.teamsArray[i] = splited[0];
@@ -162,13 +162,13 @@ public class BaseballElimination {
                     continue;
                 }
                
-                // StdOut.println("From " + s + " to " + gameNodesIndex + "(" +  this.against[i][j] +")");
+                StdOut.println("From " + s + " to " + gameNodesIndex + "(" +  this.against[i][j] +")");
                 G.addEdge(new FlowEdge(s, gameNodesIndex, this.against[i][j]));
 
-                // StdOut.println(" * From " + gameNodesIndex + " to " + (gameNodes + teamI + 1) + "(MAX)");
-                // StdOut.println(" * From " + gameNodesIndex + " to " + (gameNodes + teamJ + 1) + "(MAX)");
-                G.addEdge(new FlowEdge(gameNodesIndex, gameNodes + teamI + 1, Integer.MAX_VALUE));
-                G.addEdge(new FlowEdge(gameNodesIndex, gameNodes + teamJ + 1, Integer.MAX_VALUE));
+                StdOut.println(" * From " + gameNodesIndex + " to " + (gameNodes + teamI + 1) + "(MAX)");
+                StdOut.println(" * From " + gameNodesIndex + " to " + (gameNodes + teamJ + 1) + "(MAX)");
+                G.addEdge(new FlowEdge(gameNodesIndex, gameNodes + teamI + 1, Double.POSITIVE_INFINITY));
+                G.addEdge(new FlowEdge(gameNodesIndex, gameNodes + teamJ + 1, Double.POSITIVE_INFINITY));
 
                 gameNodesIndex++;
                 teamJ++;
@@ -184,21 +184,27 @@ public class BaseballElimination {
                 continue;
             }
 
-            // StdOut.println("LAST From " + (gameNodes + teamI + 1) + " to " + t +" V: " + (teamWings - this.wins[teamI]) );
+            StdOut.println("LAST From " + (gameNodes + teamI + 1) + " to " + t +" V: " + (teamWings - this.wins[teamI]) );
             G.addEdge(new FlowEdge(gameNodes + teamI + 1, t, teamWings - this.wins[i]));
             // StdOut.println(" -- " + this.teamsArray[i]);
             teamI++;
         }
 
-        // StdOut.println(G);
+        StdOut.println(G);
 
         // compute maximum flow and minimum cut
         FordFulkerson maxflow = new FordFulkerson(G, s, t);
+
+        // StdOut.println(G);
+        // StdOut.println(maxflow.inCut(t));
+
         // StdOut.println("Max flow from " + s + " to " + t);
         // for (int v = t; v < G.V(); v++) {
             for (FlowEdge e : G.adj(t)) {
+                StdOut.println(maxflow.inCut(e.from()));
+
                 if (e.to() == t && e.flow() == e.capacity()) {
-                    // StdOut.println("   " + e);
+                    StdOut.println("   " + e);
 
                     int tid = e.from() - gameNodes - 1;
                     if (tid >= teamId) {
@@ -234,7 +240,8 @@ public class BaseballElimination {
             StdOut.println();
         }
 
-        for (String team : division.teams()) {
+        // for (String team : division.teams()) {
+            String team = "Toronto";
             if (division.isEliminated(team)) {
                 StdOut.print(team + " is eliminated by the subset R = { ");
                 for (String t : division.certificateOfElimination(team)) {
@@ -246,6 +253,6 @@ public class BaseballElimination {
             }
 
             // break;
-        }
+        // }
     }
 }
