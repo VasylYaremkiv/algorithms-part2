@@ -128,7 +128,7 @@ public class BaseballElimination {
         int teamWings = this.wins(team) + this.remaining(team);
         for (String t : this.teams()) {
             if (t != team && teamWings < this.wins(t)) {
-                eliminationTeams.add(team);
+                eliminationTeams.add(t);
             }
         }
 
@@ -138,17 +138,17 @@ public class BaseballElimination {
 
         int n = this.numberOfTeams();
         int gameNodes = (n - 1) * (n - 2) / 2;
-        int V = 2 + (n - 1) + gameNodes;
-        int E = 3 * gameNodes + n - 1;
+        int total = 2 + (n - 1) + gameNodes;
+        // int E = 3 * gameNodes + n - 1;
 
-        int s = 0, t = V - 1;
+        int s = 0, t = total - 1;
         // int j = 0;
         int teamId = this.teamId(team);
         int gameNodesIndex = 1;
         int teamI = 0;
         int teamJ = 0;
 
-        FlowNetwork G = new FlowNetwork(V);
+        FlowNetwork G = new FlowNetwork(total);
         // StdOut.println("\n\n\nTEAM : " + team);
 
         for (int i = 0; i < n; i++) {
@@ -162,11 +162,11 @@ public class BaseballElimination {
                     continue;
                 }
                
-                StdOut.println("From " + s + " to " + gameNodesIndex + "(" +  this.against[i][j] +")");
+                // StdOut.println("From " + s + " to " + gameNodesIndex + "(" +  this.against[i][j] +")");
                 G.addEdge(new FlowEdge(s, gameNodesIndex, this.against[i][j]));
 
-                StdOut.println(" * From " + gameNodesIndex + " to " + (gameNodes + teamI + 1) + "(MAX)");
-                StdOut.println(" * From " + gameNodesIndex + " to " + (gameNodes + teamJ + 1) + "(MAX)");
+                // StdOut.println(" * From " + gameNodesIndex + " to " + (gameNodes + teamI + 1) + "(MAX)");
+                // StdOut.println(" * From " + gameNodesIndex + " to " + (gameNodes + teamJ + 1) + "(MAX)");
                 G.addEdge(new FlowEdge(gameNodesIndex, gameNodes + teamI + 1, Double.POSITIVE_INFINITY));
                 G.addEdge(new FlowEdge(gameNodesIndex, gameNodes + teamJ + 1, Double.POSITIVE_INFINITY));
 
@@ -184,13 +184,13 @@ public class BaseballElimination {
                 continue;
             }
 
-            StdOut.println("LAST From " + (gameNodes + teamI + 1) + " to " + t +" V: " + (teamWings - this.wins[teamI]) );
+            // StdOut.println("LAST From " + (gameNodes + teamI + 1) + " to " + t +" V: " + (teamWings - this.wins[teamI]) );
             G.addEdge(new FlowEdge(gameNodes + teamI + 1, t, teamWings - this.wins[i]));
             // StdOut.println(" -- " + this.teamsArray[i]);
             teamI++;
         }
 
-        StdOut.println(G);
+        // StdOut.println(G);
 
         // compute maximum flow and minimum cut
         FordFulkerson maxflow = new FordFulkerson(G, s, t);
@@ -201,10 +201,11 @@ public class BaseballElimination {
         // StdOut.println("Max flow from " + s + " to " + t);
         // for (int v = t; v < G.V(); v++) {
             for (FlowEdge e : G.adj(t)) {
-                StdOut.println(maxflow.inCut(e.from()));
+                // StdOut.println(maxflow.inCut(e.from()));
 
-                if (e.to() == t && e.flow() == e.capacity()) {
-                    StdOut.println("   " + e);
+                if (maxflow.inCut(e.from())) {
+                // if (e.to() == t && e.flow() == e.capacity()) {
+                    // StdOut.println("   " + e);
 
                     int tid = e.from() - gameNodes - 1;
                     if (tid >= teamId) {
@@ -240,8 +241,8 @@ public class BaseballElimination {
             StdOut.println();
         }
 
-        // for (String team : division.teams()) {
-            String team = "Toronto";
+        for (String team : division.teams()) {
+            // String team = "Detroit";// "Toronto";
             if (division.isEliminated(team)) {
                 StdOut.print(team + " is eliminated by the subset R = { ");
                 for (String t : division.certificateOfElimination(team)) {
@@ -253,6 +254,6 @@ public class BaseballElimination {
             }
 
             // break;
-        // }
+        }
     }
 }
