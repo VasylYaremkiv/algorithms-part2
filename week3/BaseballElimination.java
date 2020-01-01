@@ -9,6 +9,7 @@ import java.util.HashMap;
 
 public class BaseballElimination {
     private final HashMap<String, Integer> teams;
+    private final String[] teamsArray;
 
     private final int[] wins;
     private final int[] losses;
@@ -23,6 +24,7 @@ public class BaseballElimination {
         in.readLine();
 
         this.teams = new HashMap<String, Integer>();
+        this.teamsArray = new String[n];
 
         this.wins = new int[n];
         this.losses = new int[n];
@@ -36,6 +38,7 @@ public class BaseballElimination {
             // StdOut.println(line);
             splited = line.split("\\s+");
             this.teams.put(splited[0], i);
+            this.teamsArray[i] = splited[0];
 
             this.wins[i] = Integer.parseInt(splited[1]);
             this.losses[i] = Integer.parseInt(splited[2]);
@@ -104,11 +107,33 @@ public class BaseballElimination {
 
         // int id = this.teamId(team);
 
+
+
+        return this.certificateOfElimination(team) != null;
+    }
+
+    // subset R of teams that eliminates given team; null if not eliminated
+    public Iterable<String> certificateOfElimination(String team) {
+        if (!this.teams.containsKey(team)) {
+            throw new IllegalArgumentException();
+        }
+
+        // if (!this.isEliminated(team)) {
+        //     return null;
+        // }
+
+        Bag<String> eliminationTeams = new Bag<String>();
+
+
         int teamWings = this.wins(team) + this.remaining(team);
         for (String t : this.teams()) {
             if (t != team && teamWings < this.wins(t)) {
-                return true;
+                eliminationTeams.add(team);
             }
+        }
+
+        if (!eliminationTeams.isEmpty()) {
+            return eliminationTeams;
         }
 
         int n = this.numberOfTeams();
@@ -124,7 +149,7 @@ public class BaseballElimination {
         int teamJ = 0;
 
         FlowNetwork G = new FlowNetwork(V);
-        StdOut.println("\n\n\nTEAM : " + team);
+        // StdOut.println("\n\n\nTEAM : " + team);
 
         for (int i = 0; i < n; i++) {
             if (i == teamId) {
@@ -137,11 +162,11 @@ public class BaseballElimination {
                     continue;
                 }
                
-                StdOut.println("From " + s + " to " + gameNodesIndex + "(" +  this.against[i][j] +")");
+                // StdOut.println("From " + s + " to " + gameNodesIndex + "(" +  this.against[i][j] +")");
                 G.addEdge(new FlowEdge(s, gameNodesIndex, this.against[i][j]));
 
-                StdOut.println(" * From " + gameNodesIndex + " to " + (gameNodes + teamI + 1) + "(MAX)");
-                StdOut.println(" * From " + gameNodesIndex + " to " + (gameNodes + teamJ + 1) + "(MAX)");
+                // StdOut.println(" * From " + gameNodesIndex + " to " + (gameNodes + teamI + 1) + "(MAX)");
+                // StdOut.println(" * From " + gameNodesIndex + " to " + (gameNodes + teamJ + 1) + "(MAX)");
                 G.addEdge(new FlowEdge(gameNodesIndex, gameNodes + teamI + 1, Integer.MAX_VALUE));
                 G.addEdge(new FlowEdge(gameNodesIndex, gameNodes + teamJ + 1, Integer.MAX_VALUE));
 
@@ -153,61 +178,45 @@ public class BaseballElimination {
         }
 
         teamI = 0;
+
         for (int i = 0; i < n; i++) {
             if (i == teamId) {
                 continue;
             }
 
-            StdOut.println("LAST From " + (gameNodes + teamI + 1) + " to " + t +" V: " + (teamWings - this.wins[teamI]) );
+            // StdOut.println("LAST From " + (gameNodes + teamI + 1) + " to " + t +" V: " + (teamWings - this.wins[teamI]) );
             G.addEdge(new FlowEdge(gameNodes + teamI + 1, t, teamWings - this.wins[i]));
-
+            // StdOut.println(" -- " + this.teamsArray[i]);
             teamI++;
         }
 
-        StdOut.println(G);
+        // StdOut.println(G);
 
         // compute maximum flow and minimum cut
         FordFulkerson maxflow = new FordFulkerson(G, s, t);
-        StdOut.println("Max flow from " + s + " to " + t);
-        for (int v = 0; v < G.V(); v++) {
-            for (FlowEdge e : G.adj(v)) {
+        // StdOut.println("Max flow from " + s + " to " + t);
+        // for (int v = t; v < G.V(); v++) {
+            for (FlowEdge e : G.adj(t)) {
                 if (e.to() == t && e.flow() == e.capacity()) {
-                    StdOut.println("   " + e);
+                    // StdOut.println("   " + e);
+
+                    int tid = e.from() - gameNodes - 1;
+                    if (tid >= teamId) {
+                        tid++;
+                    }
+                    eliminationTeams.add(this.teamsArray[tid]);
                 }
                 // if ((v == e.from()) && e.flow() > 0)
                 //     StdOut.println("   " + e);
             }
-        }
+        // }
 
-        
-        StdOut.print("Min cut: ");
-        for (int v = 0; v < G.V(); v++) {
-            if (maxflow.inCut(v)) StdOut.print(v + " ");
-
-
-        }
-        StdOut.println();
-
-        StdOut.println("Max flow value = " +  maxflow.value());
-
-        return false;
-    }
-
-    // subset R of teams that eliminates given team; null if not eliminated
-    public Iterable<String> certificateOfElimination(String team) {
-        if (!this.teams.containsKey(team)) {
-            throw new IllegalArgumentException();
-        }
-
-        if (!this.isEliminated(team)) {
+        // StdOut.println(eliminationTeams.isEmpty());
+        if (eliminationTeams.isEmpty()) {
             return null;
+        } else {
+            return eliminationTeams;
         }
-
-        Bag<String> eliminationTeams = new Bag<String>();
-
-
-
-        return eliminationTeams;
     }
 
     private int teamId(String team) {
