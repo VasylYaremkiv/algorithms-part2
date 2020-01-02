@@ -1,24 +1,35 @@
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Arrays;
-import java.util.List;
 
 import edu.princeton.cs.algs4.Bag;
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdOut;
 
 public class BoggleSolver {
-    private static final char Q = 'Q';
-    private static final String QU = "Qu";
+    // private static final char Q = 'Q';
+    // private static final String QU = "Qu";
 
-    private final List<String> dictionary;
+    private final Set<String> dictionary;
     // Initializes the data structure using the given array of strings as the dictionary.
     // (You can assume each word in the dictionary contains only the uppercase letters A through Z.)
-    public BoggleSolver(String[] dictionary) {
-        this.dictionary = Arrays.asList(dictionary);
+    public BoggleSolver(String[] data) {
+        this.dictionary = new HashSet<String>();
+
+
+        for (int i = 0; i < data.length; i++) {
+            this.dictionary.add(data[i]);
+        }
+
     }
 
     // Returns the set of all valid words in the given Boggle board, as an Iterable.
     public Iterable<String> getAllValidWords(BoggleBoard board) {
         Bag<String> result = new Bag<String>();
+
+        for (String word : this.dictionary) {
+
+        }
 
         return result;
     }
@@ -30,21 +41,10 @@ public class BoggleSolver {
             return 0;
         }
 
+        return convertLengthToScore(word.length());
+    }
 
-        // char letter;
-        int length = 0;
-        for (int i = 0; i < word.length(); i++) {
-            if (word.charAt(i) == Q) {
-                i++;
-            }
-
-            length++; 
-        }
-
-        if (length < 3) {
-            return 0;
-        }
-
+    private int convertLengthToScore(int length) {
         switch (length) {
             case 3:
             case 4:
@@ -59,7 +59,6 @@ public class BoggleSolver {
                 return 11;
         }
     }
-
 
     public static void main(String[] args) {
         In in = new In(args[0]);
