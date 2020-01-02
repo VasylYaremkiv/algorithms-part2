@@ -1,7 +1,14 @@
 import java.util.Arrays;
 import java.util.List;
 
+import edu.princeton.cs.algs4.Bag;
+import edu.princeton.cs.algs4.In;
+import edu.princeton.cs.algs4.StdOut;
+
 public class BoggleSolver {
+    private static final char Q = 'Q';
+    private static final String QU = "Qu";
+
     private final List<String> dictionary;
     // Initializes the data structure using the given array of strings as the dictionary.
     // (You can assume each word in the dictionary contains only the uppercase letters A through Z.)
@@ -11,8 +18,9 @@ public class BoggleSolver {
 
     // Returns the set of all valid words in the given Boggle board, as an Iterable.
     public Iterable<String> getAllValidWords(BoggleBoard board) {
+        Bag<String> result = new Bag<String>();
 
-
+        return result;
     }
 
     // Returns the score of the given word if it is in the dictionary, zero otherwise.
@@ -22,11 +30,35 @@ public class BoggleSolver {
             return 0;
         }
 
-        
 
-        return 0;
+        // char letter;
+        int length = 0;
+        for (int i = 0; i < word.length(); i++) {
+            if (word.charAt(i) == Q) {
+                i++;
+            }
+
+            length++; 
+        }
+
+        if (length < 3) {
+            return 0;
+        }
+
+        switch (length) {
+            case 3:
+            case 4:
+                return 1;
+            case 5:
+                return 2;
+            case 6:
+                return 3;
+            case 7:
+                return 5;
+            default:
+                return 11;
+        }
     }
-
 
 
     public static void main(String[] args) {
@@ -41,5 +73,4 @@ public class BoggleSolver {
         }
         StdOut.println("Score = " + score);
     }
-
 }
