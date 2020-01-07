@@ -5,20 +5,20 @@ import java.util.Arrays;
 // import edu.princeton.cs.algs4.Bag;
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdOut;
-import edu.princeton.cs.algs4.TrieSET;
+// import edu.princeton.cs.algs4.TrieSET;
 
 public class BoggleSolver {
     // private static final char Q = 'Q';
     // private static final String QU = "Qu";
-    private TrieSET dictionary;
+    private Set<String> dictionary;
     private Set<String> resultWords;
 
     // private final Set<String> dictionary;
     // Initializes the data structure using the given array of strings as the dictionary.
     // (You can assume each word in the dictionary contains only the uppercase letters A through Z.)
     public BoggleSolver(String[] data) {
-        // this.dictionary = new HashSet<String>();
-        this.dictionary = new TrieSET();
+        this.dictionary = new HashSet<String>();
+        // this.dictionary = new TrieSET();
 
 
         for (int i = 0; i < data.length; i++) {
