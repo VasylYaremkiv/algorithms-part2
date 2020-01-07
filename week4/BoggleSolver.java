@@ -13,7 +13,8 @@ public class BoggleSolver {
     private Set<String> dictionary;
     // private TrieSET dictionary;
     private Set<String> resultWords;
-    private TrieSET trie;
+    // private TrieSET trie;
+    private Trie trie;
 
 
     // private final Set<String> dictionary;
@@ -22,11 +23,13 @@ public class BoggleSolver {
     public BoggleSolver(String[] data) {
         this.dictionary = new HashSet<String>();
         // this.dictionary = new TrieSET();
+        this.trie = new Trie();
 
 
         for (int i = 0; i < data.length; i++) {
             if (data[i].length() > 2) {
                 this.dictionary.add(data[i]);
+                this.trie.put(data[i]);
             }
         }
 
@@ -36,7 +39,7 @@ public class BoggleSolver {
     public Iterable<String> getAllValidWords(BoggleBoard board) {
         this.resultWords = new HashSet<String>();
 
-        this.trie = new TrieSET();
+        // this.trie = new TrieSET();
         boolean[][] visited;
 
         for (int i = 0; i < board.cols(); i++) {
@@ -70,9 +73,9 @@ public class BoggleSolver {
         // String dictionaryPattern = this.dictionary.longestPrefixOf(pattern);
         // StdOut.println(" pattern : " + pattern + ", dictionaryPattern : " + dictionaryPattern);
         // StdOut.println(" this.dictionary : " + this.dictionary.isEmpty());
-        // if (dictionaryPattern == null || dictionaryPattern.length() != pattern.length()) {
-        //     return ;
-        // }
+        if (!this.trie.containsPrefix(pattern)) {
+            return ;
+        }
 
         // boolean[][] visited = v.clone();
         // for (int vi = 0; vi < board.rows(); vi++) {
@@ -176,6 +179,57 @@ public class BoggleSolver {
                 return 11;
         }
     }
+    
+    private static class Trie {
+        private TrieNode root = new TrieNode();
+       
+        private static class TrieNode {
+            int R = 26;
+            TrieNode[] next = new TrieNode[R];
+            boolean word = false;
+        }
+
+        public void put(String key) { 
+            root = put(root, key, 0);
+        }
+
+        private TrieNode put(TrieNode x, String key, int d) {
+            if (x == null) x = new TrieNode();
+            if (d == key.length()) { 
+                x.word = true;
+                return x;
+            }
+            int c = key.charAt(d) - 'A';
+            x.next[c] = put(x.next[c], key, d + 1);
+           return x;
+        }
+
+
+        public boolean contains(String key) { 
+            return containsWord(key);
+        }
+
+        public boolean containsPrefix(String key) { 
+            // return containsWord(key);
+            TrieNode x = get(root, key, 0);
+            return x != null;
+        }
+
+        public boolean containsWord(String key) {
+            TrieNode x = get(root, key, 0);
+            if (x == null) return false;
+            return x.word;
+        }
+
+        private TrieNode get(TrieNode x, String key, int d) {
+            if (x == null) return null;
+            if (d == key.length()) return x;
+            int c = key.charAt(d) - 'A';
+            return get(x.next[c], key, d+1);
+        }
+    }
+    
+
 
     public static void main(String[] args) {
         In in = new In(args[0]);
