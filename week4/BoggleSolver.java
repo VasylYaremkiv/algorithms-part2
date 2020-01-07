@@ -5,13 +5,16 @@ import java.util.Arrays;
 // import edu.princeton.cs.algs4.Bag;
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdOut;
-// import edu.princeton.cs.algs4.TrieSET;
+import edu.princeton.cs.algs4.TrieSET;
 
 public class BoggleSolver {
     // private static final char Q = 'Q';
     // private static final String QU = "Qu";
     private Set<String> dictionary;
+    // private TrieSET dictionary;
     private Set<String> resultWords;
+    private TrieSET trie;
+
 
     // private final Set<String> dictionary;
     // Initializes the data structure using the given array of strings as the dictionary.
@@ -33,7 +36,7 @@ public class BoggleSolver {
     public Iterable<String> getAllValidWords(BoggleBoard board) {
         this.resultWords = new HashSet<String>();
 
-        // this.trie = new TrieSET();
+        this.trie = new TrieSET();
         boolean[][] visited;
 
         for (int i = 0; i < board.cols(); i++) {
@@ -47,34 +50,44 @@ public class BoggleSolver {
         }
         // visited = new boolean[board.cols()][board.rows()];
         // addWordsToTrie(board, visited, 1, 2, "");
-
+        // String prefix;
         // for (String word : this.dictionary) {
-        //     if (this.trie.contains(word)) {
-        //         result.add(word);                
+        //     prefix = this.trie.longestPrefixOf(word);
+        //     if (prefix != null && prefix.length() == word.length()) {
+        //         this.resultWords.add(word);                
         //     }
         // }
 
         return this.resultWords;
     }
 
-    private void addWordsToTrie(BoggleBoard board, boolean[][] v, int i, int j, String pat) {
+    private void addWordsToTrie(BoggleBoard board, boolean[][] visited, int i, int j, String pat) {
         String pattern = pat + board.getLetter(i, j);
         if (board.getLetter(i, j) == 'Q') {
             pattern += "U";
         }
 
-        boolean[][] visited = v.clone();
-        for (int vi = 0; vi < board.rows(); vi++) {
-            visited[vi] = v[vi].clone();
-        }
+        // String dictionaryPattern = this.dictionary.longestPrefixOf(pattern);
+        // StdOut.println(" pattern : " + pattern + ", dictionaryPattern : " + dictionaryPattern);
+        // StdOut.println(" this.dictionary : " + this.dictionary.isEmpty());
+        // if (dictionaryPattern == null || dictionaryPattern.length() != pattern.length()) {
+        //     return ;
+        // }
+
+        // boolean[][] visited = v.clone();
+        // for (int vi = 0; vi < board.rows(); vi++) {
+        //     visited[vi] = v[vi].clone();
+        // }
 
         visited[i][j] = true;
 
         if (pattern.length() > 2) {
-            if (this.dictionary.contains(pattern) && !this.resultWords.contains(pattern)) {
+            if (!this.resultWords.contains(pattern) && this.dictionary.contains(pattern)) {
                 this.resultWords.add(pattern);
             }    
         }
+
+        // boolean needToAdd = true;
 
         // this.trie.add(pattern);
         // if (pattern == "DIE") {
@@ -86,36 +99,51 @@ public class BoggleSolver {
         // StdOut.println(" pattern : " + pattern);
 
         if (i < board.cols() - 1 && !visited[i+1][j]) {
+            // needToAdd = false;
             addWordsToTrie(board, visited, i + 1, j, pattern);
         }
 
         if (i > 0 && !visited[i - 1][j]) {
+            // needToAdd = false;
             addWordsToTrie(board, visited, i - 1, j, pattern);
         }
 
         if (j < board.rows() - 1 && !visited[i][j + 1]) {
+            // needToAdd = false;
             addWordsToTrie(board, visited, i, j + 1, pattern);
         }
 
         if (j > 0 && !visited[i][j - 1]) {
+            // needToAdd = false;
             addWordsToTrie(board, visited, i, j - 1, pattern);
         }
 
         if (i > 0 && j > 0 && !visited[i - 1][j - 1]) {
+            // needToAdd = false;
             addWordsToTrie(board, visited, i - 1, j - 1, pattern);
         }
 
         if (i > 0 && j < board.rows() - 1 && !visited[i - 1][j + 1]) {
+            // needToAdd = false;
             addWordsToTrie(board, visited, i - 1, j + 1, pattern);
         }
 
         if (i < board.cols() - 1 && j > 0 && !visited[i + 1][j - 1]) {
+            // needToAdd = false;
             addWordsToTrie(board, visited, i + 1, j - 1, pattern);
         }
 
         if (i < board.cols() - 1 && j < board.rows() - 1 && !visited[i + 1][j + 1]) {
+            // needToAdd = false;
             addWordsToTrie(board, visited, i + 1, j + 1, pattern);
         }
+
+        // if (needToAdd) {
+        //     StdOut.println(" pattern : " + pattern);
+        //     this.trie.add(pattern);
+        // }
+
+        visited[i][j] = false;
     }
 
     // Returns the score of the given word if it is in the dictionary, zero otherwise.
@@ -160,5 +188,11 @@ public class BoggleSolver {
             score += solver.scoreOf(word);
         }
         StdOut.println("Score = " + score);
+
+
+        // TrieSET a = new TrieSET();
+        // a.add("ABSC");
+        // StdOut.println("Score = " + a.longestPrefixOf("ABe"));
+
     }
 }
