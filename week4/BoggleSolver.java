@@ -65,8 +65,8 @@ public class BoggleSolver {
     }
 
     private void addWordsToTrie(BoggleBoard board, boolean[][] visited, int i, int j, String pat) {
-        String pattern = pat + board.getLetter(i, j);
-        if (board.getLetter(i, j) == 'Q') {
+        String pattern = pat + board.getLetter(j, i);
+        if (board.getLetter(j, i) == 'Q') {
             pattern += "U";
         }
 
