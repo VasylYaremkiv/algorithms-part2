@@ -2,6 +2,8 @@ import edu.princeton.cs.algs4.BinaryStdOut;
 import edu.princeton.cs.algs4.BinaryStdIn;
 
 public class BurrowsWheeler {
+    private static final int MAX_LENGTH = 256;
+
     public static void transform() {
         String s = BinaryStdIn.readString();
         CircularSuffixArray csa = new CircularSuffixArray(s);
@@ -28,7 +30,7 @@ public class BurrowsWheeler {
         
         int length = s.length();
         char[] t = new char[length];
-        int[] counts = new int[256];
+        int[] counts = new int[MAX_LENGTH];
         int[] index = new int[length];
 
         for (int i = 0; i < length; i++) {
@@ -37,9 +39,9 @@ public class BurrowsWheeler {
             index[i] = counts[c];
             counts[c] += 1;
         }
-        int[] offset = new int[256];
+        int[] offset = new int[MAX_LENGTH];
         int cum = 0;
-        for (int i = 1; i < 256; i++) {
+        for (int i = 1; i < MAX_LENGTH; i++) {
             cum = cum + counts[i - 1];
             offset[i] = cum;
         }

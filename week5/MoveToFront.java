@@ -3,11 +3,13 @@ import edu.princeton.cs.algs4.BinaryStdIn;
 import java.util.LinkedList;
 
 public class MoveToFront {
+    private static final int MAX_LENGTH = 256;
+
     // apply move-to-front encoding, reading from 
     // standard input and writing to standard output
     public static void encode() {
         LinkedList<Character> list = new LinkedList<Character>();
-        for (int i = 0; i < 256; i++) {
+        for (int i = 0; i < MAX_LENGTH; i++) {
             list.add((char) i);
         }
         while (!BinaryStdIn.isEmpty()) {
@@ -27,7 +29,7 @@ public class MoveToFront {
     public static void decode() {
         LinkedList<Character> list = new LinkedList<Character>();
 
-        for (int i = 0; i < 256; i++) {
+        for (int i = 0; i < MAX_LENGTH; i++) {
             list.add((char) i);
         }
 

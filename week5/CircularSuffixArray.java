@@ -3,9 +3,8 @@ import java.util.Arrays;
 
 
 public class CircularSuffixArray {
-    private final String s;
     private final int length;
-    private int[] indexes;
+    private final int[] indexes;
 
     // circular suffix array of s
     public CircularSuffixArray(String s) {
@@ -13,7 +12,6 @@ public class CircularSuffixArray {
             throw new IllegalArgumentException();
         }
 
-        this.s = s;
         this.length = s.length();
 
         CircularSuffix[] array = new CircularSuffix[this.length ];
@@ -42,8 +40,8 @@ public class CircularSuffixArray {
     }
 
     private class CircularSuffix implements Comparable<CircularSuffix> {
-        private String s;
-        private int offset;
+        private final String s;
+        private final int offset;
 
         public CircularSuffix(String s, int offset) {
             this.s = s;
