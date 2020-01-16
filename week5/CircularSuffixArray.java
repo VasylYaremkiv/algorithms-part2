@@ -1,10 +1,11 @@
 import edu.princeton.cs.algs4.StdOut;
 import java.util.Arrays;
-
+import java.util.Comparator;
 
 public class CircularSuffixArray {
     private final int length;
-    private final int[] indexes;
+    private final Integer[] indexes;
+    private final String s;
 
     // circular suffix array of s
     public CircularSuffixArray(String s) {
@@ -13,16 +14,14 @@ public class CircularSuffixArray {
         }
 
         this.length = s.length();
+        this.s = s;
 
-        CircularSuffix[] array = new CircularSuffix[this.length ];
+        this.indexes = new Integer[this.length];
         for (int i = 0; i < this.length; i++) {
-            array[i] = new CircularSuffix(s, i);
+            this.indexes[i] = i;
         }
-        Arrays.sort(array);
-        this.indexes = new int[this.length];
-        for (int i = 0; i < this.length; i++) {
-            this.indexes[i] = array[i].offset;
-        }
+
+        Arrays.sort(this.indexes, new CompararCircularSuffix());
     }
 
     // length of s
@@ -39,39 +38,29 @@ public class CircularSuffixArray {
         return this.indexes[i];
     }
 
-    private class CircularSuffix implements Comparable<CircularSuffix> {
-        private final String s;
-        private final int offset;
-
-        public CircularSuffix(String s, int offset) {
-            this.s = s;
-            this.offset = offset;
-        }
-
-        private char charAt(int pos) {
-            return s.charAt((offset + pos) % s.length());
-        }
-
-        public int compareTo(CircularSuffix other) {
-            if (this == other) {
+    private class CompararCircularSuffix implements Comparator<Integer> {
+        public int compare(Integer o1, Integer o2) {
+            if (o1.equals(o2)) {
                 return 0;
             }
 
+            char currentItem, otherItem;
             for (int i = 0; i < length; i++) {
-                if (this.charAt(i) > other.charAt(i)) {
+                currentItem = s.charAt((o1 + i) % length);
+                otherItem = s.charAt((o2 + i) % length);
+
+                if (currentItem > otherItem) {
                     return 1;
                 }
-                if (this.charAt(i) < other.charAt(i)) {
+                if (currentItem < otherItem) {
                     return -1;
                 }
             }
 
             return 0;
         }
-        public String toString() {
-            return s.substring(offset, s.length()) + s.substring(0, offset);
-        }
     }
+
 
     // unit testing (required)
     public static void main(String[] args) {
